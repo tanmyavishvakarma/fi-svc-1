@@ -2,70 +2,102 @@
 import React, { createContext, useReducer, ReactNode } from 'react';
 import AppReducer from './AppReducer';
 
-// Define types
 type Transaction = {
   id: number;
   text: string;
   amount: number;
-  category:string;
-  date:string;
+  category: string;
+  date: string;
+  isExpense: boolean;
 };
 
 type State = {
   transactions: Transaction[];
 };
 
-type Action =
-  | { type: 'DELETE_TRANSACTION'; payload: number }
-  | { type: 'ADD_TRANSACTION'; payload: Transaction };
+type Action = {
+  payload: Transaction[]
+};
 
-// Initial state
 const initialState: State = {
   transactions: [],
 };
 
-// Create context
-export const GlobalContext = createContext<{ transactions: Transaction[]; deleteTransaction: (id: number) => void; addTransaction: (transaction: Transaction) => void }>({
+export const GlobalContext = createContext<{
+  transactions: Transaction[];
+  deleteTransaction: (id: number) => void;
+  addTransaction: (transaction: Transaction) => void;
+  fetchTransaction: () => void;
+}>({
   transactions: [],
-  deleteTransaction: () => {},
-  addTransaction: () => {},
+  deleteTransaction: () => { },
+  addTransaction: () => { },
+  fetchTransaction: () => { },
 });
 
-// Reducer
 const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case 'DELETE_TRANSACTION':
-      return {
-        ...state,
-        transactions: state.transactions.filter(transaction => transaction.id !== action.payload),
-      };
-    case 'ADD_TRANSACTION':
-      return {
-        ...state,
-        transactions: [action.payload, ...state.transactions],
-      };
-    default:
-      return state;
-  }
+  return {
+    ...state,
+    transactions: action.payload,
+  };
 };
 
-// Provider component
-export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const GlobalProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Actions
-  const deleteTransaction = (id: number) => {
-    dispatch({
-      type: 'DELETE_TRANSACTION',
-      payload: id,
-    });
+  const deleteTransaction = async (id: number) => {
+    try {
+      const response = await fetch(`/api/transactions?id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+      } else {
+        throw new Error('Failed to delete transaction');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    fetchTransaction()
   };
 
-  const addTransaction = (transaction: Transaction) => {
-    dispatch({
-      type: 'ADD_TRANSACTION',
-      payload: transaction,
-    });
+  const addTransaction = async (transaction: Transaction) => {
+    try {
+      const response = await fetch('api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(transaction),
+      });
+
+      if (!response.ok) {
+        throw new Error();
+      }
+
+      fetchTransaction()
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchTransaction = async () => {
+    try {
+      const response = await fetch('/api/transactions');
+      if (!response.ok) {
+        throw new Error('Failed to fetch transactions');
+      }
+      const data: Transaction[] = await response.json();
+      dispatch({
+        payload: data,
+      });
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
   };
 
   return (
@@ -74,6 +106,7 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         transactions: state.transactions,
         deleteTransaction,
         addTransaction,
+        fetchTransaction,
       }}
     >
       {children}

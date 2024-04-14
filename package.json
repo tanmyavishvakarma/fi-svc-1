@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@libsql/client": "^0.6.0",
+    "apexcharts": "^3.48.0",
     "better-sqlite3": "^9.5.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.8",
     "next": "14.2.1",
     "react": "^18",
+    "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
     "sqlite3": "^5.1.7"
   },

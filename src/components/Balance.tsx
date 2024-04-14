@@ -9,11 +9,6 @@ export const Balance: React.FC = () => {
 
     const total: string = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
 
-    useEffect(()=>{
-        fetch("api/transactions").then((res)=>console.log(res))
-    },[])
-
-
     return (
         <>
             <h4>Your Balance</h4>

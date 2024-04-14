@@ -5,6 +5,7 @@ import {IncomeExpenses} from '../components/IncomeExpenses'
 import {TransactionList} from '../components/TransactionList'
 import{AddTransaction} from '../components/AddTransaction'
 import{GlobalProvider} from '../context/GlobalState'
+import LineChart from '../components/LineChart'
 export default function Home() {
   return (
     <div>
@@ -15,8 +16,10 @@ export default function Home() {
           <IncomeExpenses />
           <AddTransaction />
           <TransactionList />
+          <LineChart/>
         </div>
       </GlobalProvider>
+      
     </div>
   );
 }

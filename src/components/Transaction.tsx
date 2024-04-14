@@ -9,23 +9,28 @@ type TransactionProps = {
     amount: number;
     category: string;
     date: string;
+    isExpense: boolean;
   };
 };
 
 export const Transaction: React.FC<TransactionProps> = ({ transaction }) => {
   const { deleteTransaction } = useContext(GlobalContext);
 
-  const sign: string = transaction.amount < 0 ? '-' : '+';
+  const sign: string = transaction.isExpense ? '-' : '+';
+
+  const handleDelete = async () => {
+    deleteTransaction(transaction.id);
+  };
 
   return (
-    <li className={transaction.amount < 0 ? 'minus' : 'plus'}>
+    <li className={transaction.isExpense ? 'minus' : 'plus'}>
       <div>{transaction.text}</div>
       <div>{transaction.category.toLowerCase().split(' ').map(function (word) {
         return (word.charAt(0).toUpperCase() + word.slice(1));
       }).join(' ')
       }</div>
       <span>{sign}${Math.abs(transaction.amount)}</span>
-      <button onClick={() => deleteTransaction(transaction.id)} className="delete-btn">x</button>
+      <button onClick={handleDelete} className="delete-btn">x</button>
     </li>
   );
 };

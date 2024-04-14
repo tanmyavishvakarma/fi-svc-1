@@ -16,6 +16,7 @@ interface FormState {
   amount: number;
   category: string;
   date: string;
+  isExpense: boolean;
 }
 
 export const AddTransaction: React.FC = () => {
@@ -24,6 +25,7 @@ export const AddTransaction: React.FC = () => {
     amount: 0,
     category: '',
     date: '',
+    isExpense: true,
   });
 
   const [amountError, setAmountError] = useState<string>('');
@@ -40,7 +42,6 @@ export const AddTransaction: React.FC = () => {
 
     let hasError = false;
 
-    // Validate amount
     if (formData.amount === 0) {
       setAmountError("Please enter a valid amount.");
       hasError = true;
@@ -70,44 +71,26 @@ export const AddTransaction: React.FC = () => {
     }
 
     if (!hasError) {
+      const signedAmount = formData.isExpense ? -Math.abs(formData.amount) : Math.abs(formData.amount);
+
       const newTransaction: Transaction = {
         id: Math.floor(Math.random() * 100000000),
-        isExpense: formData.amount < 0,
-        ...formData
+        text: formData.text,
+        amount: formData.amount,
+        category: formData.category,
+        date: formData.date,
+        isExpense: formData.isExpense
       };
 
-      addTransaction(newTransaction)
+      addTransaction(newTransaction);
+      setFormData({
+        text: '',
+        amount: 0,
+        category: '',
+        date: '',
+        isExpense: true,
+      });
 
-      try {
-        const response = await fetch('api/transactions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newTransaction),
-        });
-
-        if (!response.ok) {
-          throw new Error();
-        }
-
-        // Assuming the response contains the newly added transaction data or some indicator of success
-        // You can handle the response based on your API implementation
-        // For example, you may update UI based on the response
-        // const responseData = await response.json();
-        // handleResponse(responseData);
-
-        // Clear form data after successful submission
-        setFormData({
-          text: '',
-          amount: 0,
-          category: '',
-          date: '',
-        });
-      } catch (error) {
-        console.error(error);
-        // Handle error state or display error message to the user
-      }
     }
   };
 
@@ -115,7 +98,7 @@ export const AddTransaction: React.FC = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'amount' ? parseInt(value) : value,
+      [name]: name == "isExpense" ? value == "expense" ? true : false : value
     });
   };
 
@@ -124,7 +107,7 @@ export const AddTransaction: React.FC = () => {
       <h3>Add new transaction</h3>
       <form onSubmit={onSubmit}>
         <div className="form-control">
-          <label htmlFor="category">Category</label>
+          <label>Category</label>
           <select name="category" value={formData.category} onChange={handleChange}>
             <option value="">Select category</option>
             {financialCategories.map((category, index) => (
@@ -134,20 +117,31 @@ export const AddTransaction: React.FC = () => {
           <div className="error-message">{categoryError}</div>
         </div>
         <div className="form-control">
-          <label htmlFor="amount">Amount</label>
-          <input type="number" name="amount" value={formData.amount} onChange={handleChange} placeholder="Enter Amount" />
-          <div className="error-message">{amountError}</div>
-        </div>
-
-        <div className="form-control">
-          <label htmlFor="text">Description</label>
+          <label>Description</label>
           <input type="text" name="text" value={formData.text} onChange={handleChange} placeholder="Enter Description" />
           <div className="error-message">{textError}</div>
-
         </div>
-
         <div className="form-control">
-          <label htmlFor="date">Date</label>
+          <label>Amount</label>
+          <div className="amount-div">
+            <span>{formData.isExpense ? '-' : '+'}</span>
+            <input type="number" name="amount" value={formData.amount} onChange={handleChange} placeholder="Enter Amount" />
+          </div>
+          <div className="error-message">{amountError}</div>
+        </div>
+        <div className="form-control">
+          <label>Transaction Type:</label>
+          <label>
+            <input type="radio" name="isExpense" value="expense" checked={formData.isExpense} onChange={handleChange} />
+            Expense
+          </label>
+          <label>
+            <input type="radio" name="isExpense" value="income" checked={!formData.isExpense} onChange={handleChange} />
+            Income
+          </label>
+        </div>
+        <div className="form-control">
+          <label>Date</label>
           <input type="date" name="date" value={formData.date} onChange={handleChange} />
           <div className="error-message">{dateError}</div>
         </div>

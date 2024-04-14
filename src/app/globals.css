@@ -197,3 +197,10 @@ select {
   color: red;
   font-size: small;
 }
+
+.amount-div{
+  gap:5px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
