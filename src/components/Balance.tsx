@@ -5,9 +5,9 @@ import { GlobalContext } from '../context/GlobalState';
 export const Balance: React.FC = () => {
     const { transactions, fetchTransaction } = useContext(GlobalContext);
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchTransaction()
-    },[])
+    }, [])
 
     const amounts: number[] = transactions.map(transaction => transaction.amount);
 
@@ -16,7 +16,7 @@ export const Balance: React.FC = () => {
     return (
         <>
             <h4>Your Balance</h4>
-            <h1>${total}</h1>
+            <h1>₹{total}</h1>
         </>
     );
 };

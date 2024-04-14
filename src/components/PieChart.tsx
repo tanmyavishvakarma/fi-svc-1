@@ -1,42 +1,45 @@
-"use client"
 import { GlobalContext } from "@/context/GlobalState";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 
-interface DataItem {
-    name: string;
-    quantity: number;
-}
-
 const PieChart: React.FC = () => {
-    const categories: { [key: string]: number } = {};
-    const { transactions } = useContext(GlobalContext);
+    const { fetchInsights, transactions } = useContext(GlobalContext);
+    const [data, setData] = useState<{ [key: string]: any }>({});
 
-    transactions.forEach((expense) => {
-        const { category, amount, isExpense } = expense;
-        if (isExpense) {
-            categories[category] = (categories[category] || 0) + Math.abs(amount);
-        }
-    });
+    useEffect(() => {
+        const fetchData = async () => {
+            const insights = await fetchInsights();
+            setData(insights);
+        };
+        fetchData();
+    }, [fetchInsights, transactions]);
 
-    const names: string[] = Object.keys(categories);
-    const quantities: number[] = Object.values(categories).map(value => Math.abs(value)); 
+    const { quantities = [], names = [] } = data;
 
     const palette = generatePalette(names.length);
 
     return (
-        <Chart
-            type="pie"
-            series={quantities}
-            options={{
-                labels: names,
-                legend: {
-                    show: true,
-                    position: "bottom",
-                },
-                colors: palette,
-            }}
-        />
+        names.length === 0 ?
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                No Records Found Please Add a Transaction
+            </div>
+            :
+            <Chart
+                type="pie"
+                series={quantities}
+                options={{
+                    labels: names,
+                    legend: {
+                        show: true,
+                        position: "bottom",
+                    },
+                    title: {
+                        text: "Category Expense",
+                        align: "left"
+                    },
+                    colors: palette,
+                }}
+            />
     );
 };
 

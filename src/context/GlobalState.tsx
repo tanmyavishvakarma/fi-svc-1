@@ -13,6 +13,10 @@ type Transaction = {
 
 type State = {
   transactions: Transaction[];
+  income: [];
+  expenses: [];
+  names: [];
+  quantities: [];
 };
 
 type Action = {
@@ -21,6 +25,10 @@ type Action = {
 
 const initialState: State = {
   transactions: [],
+  income: [],
+  expenses: [],
+  names: [],
+  quantities: []
 };
 
 export const GlobalContext = createContext<{
@@ -28,12 +36,15 @@ export const GlobalContext = createContext<{
   deleteTransaction: (id: number) => void;
   addTransaction: (transaction: Transaction) => void;
   fetchTransaction: () => void;
+  fetchInsights: () => {};
 }>({
   transactions: [],
   deleteTransaction: () => { },
   addTransaction: () => { },
   fetchTransaction: () => { },
+  fetchInsights: () => ({}), // Return an empty object initially
 });
+
 
 const reducer = (state: State, action: Action): State => {
   return {
@@ -100,6 +111,21 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const fetchInsights = async () => {
+    try {
+      const response = await fetch('/api/insights');
+      if (!response.ok) {
+        throw new Error('Failed to fetch Insights');
+      }
+      const data = await response.json();
+      return data; // Assuming data is already in the format of an object of arrays
+    } catch (error) {
+      console.error('Error fetching insights:', error);
+      return {}; // Return an empty object if there's an error
+    }
+  };
+
+
   return (
     <GlobalContext.Provider
       value={{
@@ -107,6 +133,7 @@ export const GlobalProvider: React.FC<{ children: ReactNode }> = ({
         deleteTransaction,
         addTransaction,
         fetchTransaction,
+        fetchInsights,
       }}
     >
       {children}

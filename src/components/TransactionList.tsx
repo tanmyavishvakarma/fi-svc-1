@@ -11,11 +11,21 @@ export const TransactionList: React.FC = () => {
   return (
     <>
       <h3>Transaction History</h3>
-      <ul className="list">
-        {transactions.map(transaction => (
-          <Transaction key={transaction.id} transaction={transaction} />
-        ))}
-      </ul>
+      {
+        transactions.length == 0 ?
+          <div>No Records Found Please Add a Transaction</div>
+          :
+          <div>
+            <ul className="list">
+              {transactions.map(transaction => (
+                <Transaction key={transaction.id} transaction={transaction} />
+              ))}
+            </ul>
+            <div style={{ fontSize: "15px" }}>Hover On Transaction to Delete</div>
+          </div>
+
+      }
+
     </>
   );
 };

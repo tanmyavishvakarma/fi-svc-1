@@ -1,31 +1,31 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
 import ApexCharts from "apexcharts";
 import { GlobalContext } from "@/context/GlobalState";
 
 const LineChart: React.FC = () => {
   const chartRef = useRef<any>(null);
-  const { transactions } = useContext(GlobalContext);
+  const { fetchInsights, transactions } = useContext(GlobalContext);
 
   transactions.sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
     return dateA - dateB;
   });
 
-  console.log(transactions);
-  const dates = transactions.map((item) => item.date);
-  console.log(dates);
-  const expenses = transactions
-    .filter((item) => item.isExpense)
-    .map((item) => ({ x: new Date(item.date), y: item.amount }));
+  const [data, setData] = useState<{ [key: string]: any }>({});
 
-  const income = transactions
-    .filter((item) => !item.isExpense)
-    .map((item) => ({ x: new Date(item.date), y: item.amount }));
+  useEffect(() => {
+    const fetchData = async () => {
+      const insights = await fetchInsights();
+      setData(insights);
+    };
+    fetchData();
+  }, [fetchInsights, transactions]);
 
-  console.log({ expenses });
+  const { expenses = [], income = [] } = data;
+
   const options: ApexCharts.ApexOptions = {
     series: [
       {
@@ -72,7 +72,7 @@ const LineChart: React.FC = () => {
       curve: "smooth",
     },
     title: {
-      text: "Spending Trends",
+      text: "Transaction Trends",
       align: "left",
     },
     grid: {

@@ -29,7 +29,7 @@ export const Transaction: React.FC<TransactionProps> = ({ transaction }) => {
         return (word.charAt(0).toUpperCase() + word.slice(1));
       }).join(' ')
       }</div>
-      <span>{sign}${Math.abs(transaction.amount)}</span>
+      <span>{sign}₹{Math.abs(transaction.amount)}</span>
       <button onClick={handleDelete} className="delete-btn">x</button>
     </li>
   );

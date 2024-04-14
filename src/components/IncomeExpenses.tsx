@@ -10,7 +10,7 @@ export const IncomeExpenses: React.FC = () => {
   const amounts: number[] = transactions.map(transaction => transaction.amount);
 
   const income: string = transactions
-    .filter(item => !item.isExpense )
+    .filter(item => !item.isExpense)
     .reduce((acc, item) => (acc += item.amount), 0)
     .toFixed(2);
 
