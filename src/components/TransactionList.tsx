@@ -6,10 +6,7 @@ import { Transaction } from './Transaction';
 import { GlobalContext } from '../context/GlobalState';
 
 export const TransactionList: React.FC = () => {
-  const { transactions, fetchTransaction } = useContext(GlobalContext);
-  useEffect(()=>{
-    fetchTransaction()
-  },[])
+  const { transactions } = useContext(GlobalContext);
 
   return (
     <>

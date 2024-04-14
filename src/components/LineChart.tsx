@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useContext, useEffect, useRef } from "react";
 import Chart from "react-apexcharts";
 import ApexCharts from "apexcharts";
@@ -6,7 +6,7 @@ import { GlobalContext } from "@/context/GlobalState";
 
 const LineChart: React.FC = () => {
   const chartRef = useRef<any>(null);
-  const { transactions } = useContext(GlobalContext)
+  const { transactions } = useContext(GlobalContext);
 
   transactions.sort((a, b) => {
     const dateA = new Date(a.date);
@@ -14,30 +14,46 @@ const LineChart: React.FC = () => {
     return dateA - dateB;
   });
 
-  console.log(transactions)
-  const dates = transactions.map(item => item.date)
-  console.log(dates)
-  const expenses =
-    transactions.filter(item => item.isExpense)
-      .map(item => (item.date, item.amount));
+  console.log(transactions);
+  const dates = transactions.map((item) => item.date);
+  console.log(dates);
+  const expenses = transactions
+    .filter((item) => item.isExpense)
+    .map((item) => ({ x: new Date(item.date), y: item.amount }));
 
   const income = transactions
-    .filter(item => !item.isExpense)
-    .map(item => (item.date, item.amount));
+    .filter((item) => !item.isExpense)
+    .map((item) => ({ x: new Date(item.date), y: item.amount }));
 
+  console.log({ expenses });
   const options: ApexCharts.ApexOptions = {
     series: [
       {
         name: "Expense",
-        data: expenses
+        data: expenses,
       },
       {
         name: "Income",
-        data: income
-      }
+        data: income,
+      },
     ],
     chart: {
-      height: 350,
+      toolbar: {
+        show: true,
+        offsetX: 0,
+        offsetY: -10,
+        tools: {
+          download: true,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+          customIcons: []
+        }
+      },
+      height: 500,
       type: "line",
       dropShadow: {
         enabled: true,
@@ -45,58 +61,65 @@ const LineChart: React.FC = () => {
         top: 18,
         left: 7,
         blur: 10,
-        opacity: 0.2
+        opacity: 0.2,
       },
-      toolbar: {
-        show: false
-      }
     },
-    colors: ["#77B6EA", "#545454"],
+    colors: ["red", "green"],
     dataLabels: {
-      enabled: true
+      enabled: true,
     },
     stroke: {
-      curve: "smooth"
+      curve: "smooth",
     },
     title: {
-      text: "Average High & Low Temperature",
-      align: "left"
+      text: "Spending Trends",
+      align: "left",
     },
     grid: {
       borderColor: "#e7e7e7",
       row: {
-        colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-        opacity: 0.5
-      }
+        colors: ["#f3f3f3", "transparent"],
+        opacity: 0.5,
+      },
     },
     markers: {
-      size: 1
+      size: 1,
     },
     xaxis: {
-      type: 'category'
+      type: "datetime",
     },
     yaxis: {
       title: {
-        text: "Temperature"
+        text: "Amount",
       },
-      min: Math.min.apply(Math, transactions.map(item => item.amount)),
-      max: Math.max.apply(Math, transactions.map(item => item.amount))
+      min: Math.min.apply(
+        Math,
+        transactions.map((item) => item.amount)
+      ),
+      max: Math.max.apply(
+        Math,
+        transactions.map((item) => item.amount)
+      ),
     },
     legend: {
       position: "top",
       horizontalAlign: "right",
       floating: true,
       offsetY: -25,
-      offsetX: -5
-    }
+      offsetX: -5,
+    },
   };
+
 
   useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current.chart) {
         chartRef.current.chart.updateOptions(options);
       } else {
-        chartRef.current.chart = new ApexCharts(document.querySelector("#linechart"), options);
+        chartRef.current.chart = new ApexCharts(
+          document.querySelector("#linechart"),
+          options
+        );
         chartRef.current.chart.render();
       }
     }
@@ -104,7 +127,13 @@ const LineChart: React.FC = () => {
 
   return (
     <div id="linechart">
-      <Chart options={options} series={options.series} type="line" height={350} ref={chartRef} />
+      <Chart
+        options={options}
+        series={options.series}
+        type="line"
+        height={500}
+        ref={chartRef}
+      />
     </div>
   );
 };

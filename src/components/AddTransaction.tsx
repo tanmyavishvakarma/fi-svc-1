@@ -102,6 +102,8 @@ export const AddTransaction: React.FC = () => {
     });
   };
 
+  const currentDate = new Date().toISOString().split('T')[0];
+
   return (
     <>
       <h3>Add new transaction</h3>
@@ -142,7 +144,7 @@ export const AddTransaction: React.FC = () => {
         </div>
         <div className="form-control">
           <label>Date</label>
-          <input type="date" name="date" value={formData.date} onChange={handleChange} />
+          <input type="date" name="date" max={currentDate} value={formData.date} onChange={handleChange} />
           <div className="error-message">{dateError}</div>
         </div>
         <button className="btn">Add transaction</button>

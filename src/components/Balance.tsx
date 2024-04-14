@@ -3,7 +3,11 @@ import React, { useContext, useEffect } from 'react';
 import { GlobalContext } from '../context/GlobalState';
 
 export const Balance: React.FC = () => {
-    const { transactions } = useContext(GlobalContext);
+    const { transactions, fetchTransaction } = useContext(GlobalContext);
+
+    useEffect(()=>{
+        fetchTransaction()
+    },[])
 
     const amounts: number[] = transactions.map(transaction => transaction.amount);
 

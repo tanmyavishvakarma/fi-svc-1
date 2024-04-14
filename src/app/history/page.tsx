@@ -2,9 +2,8 @@ import React from 'react';
 import { GlobalProvider } from '../../context/GlobalState'
 import { Balance } from '@/components/Balance';
 import { Header } from '@/components/Header';
-import LineChart from '@/components/LineChart';
-import PieChart from '@/components/PieChart';
-
+import { TransactionList } from '@/components/TransactionList';
+Balance
 export default function Home() {
   return (
     <div>
@@ -12,8 +11,7 @@ export default function Home() {
         <Header />
         <Balance />
         <div className="container">
-          <LineChart/>
-          <PieChart/>
+          <TransactionList />
         </div>
       </GlobalProvider>
 
