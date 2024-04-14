@@ -18,12 +18,12 @@ export default function Home() {
       <GlobalProvider>
         <Header />
         <Balance />
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-          <label>Pie Chart</label>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", margin: "20px" }}>
+          <h5>View Category wise Expenditure</h5>
           <Switch onChange={handleChange} checked={checked}
-            onColor="#86d3ff"
-            onHandleColor="#2693e6"
-            handleDiameter={30}
+            onColor="#2693e6"
+            offColor="#2693e6"
+            handleDiameter={10}
             uncheckedIcon={false}
             checkedIcon={false}
             boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
@@ -33,11 +33,9 @@ export default function Home() {
             className="react-switch"
             id="material-switch"
           />
-          <label>Line Graph</label>
+          <h5>View Transaction Trends</h5>
         </div>
-        <div className="container">
-          {checked ? <LineChart /> : <PieChart />}
-        </div>
+        {checked ? <LineChart /> : <PieChart />}
       </GlobalProvider>
     </div>
   );

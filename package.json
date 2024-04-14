@@ -19,6 +19,7 @@
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
     "react-switch": "^7.0.0",
+    "react-table": "^7.8.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

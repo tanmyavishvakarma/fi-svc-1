@@ -1,20 +1,15 @@
-"use client";
+import { GlobalContext } from "@/context/GlobalState";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
 import ApexCharts from "apexcharts";
-import { GlobalContext } from "@/context/GlobalState";
+import { useTable } from "react-table";
+import { useMemo } from 'react';
 
 const LineChart: React.FC = () => {
   const chartRef = useRef<any>(null);
   const { fetchInsights, transactions } = useContext(GlobalContext);
-
-  transactions.sort((a, b) => {
-    const dateA = new Date(a.date).getTime();
-    const dateB = new Date(b.date).getTime();
-    return dateA - dateB;
-  });
-
   const [data, setData] = useState<{ [key: string]: any }>({});
+  const [viewMode, setViewMode] = useState<string>("Chart");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,8 +45,8 @@ const LineChart: React.FC = () => {
           zoomout: true,
           pan: true,
           reset: true,
-          customIcons: []
-        }
+          customIcons: [],
+        },
       },
       height: 500,
       type: "line",
@@ -110,7 +105,6 @@ const LineChart: React.FC = () => {
     },
   };
 
-
   useEffect(() => {
     if (chartRef.current) {
       if (chartRef.current.chart) {
@@ -125,17 +119,112 @@ const LineChart: React.FC = () => {
     }
   }, [options]);
 
+  const toggleViewMode = () => {
+    setViewMode((prevMode) => (prevMode === "Chart" ? "List" : "Chart"));
+  };
+
   return (
-    <div id="linechart">
-      <Chart
-        options={options}
-        series={options.series}
-        type="line"
-        height={500}
-        ref={chartRef}
-      />
+    <div>
+      {viewMode === "Chart" ? (
+        <div id="linechart">
+          <Chart
+            options={options}
+            series={options.series}
+            type="line"
+            height={500}
+            ref={chartRef}
+          />
+        </div>
+      ) : (
+        <TableView expenses={expenses} income={income} />
+      )}
+      <div style={{ display: "flex", justifyContent:"center" }}>
+        <h5>Toggle {viewMode} View</h5>
+        <input
+          type="checkbox"
+          onChange={toggleViewMode}
+          checked={viewMode === "List"}
+        />
+      </div>
     </div>
   );
 };
+
+
+const TableView: React.FC<{ expenses: any[]; income: any[] }> = ({
+  expenses,
+  income,
+}) => {
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Date',
+        accessor: 'x',
+      },
+      {
+        Header: 'Expense',
+        accessor: 'expense',
+      },
+      {
+        Header: 'Income',
+        accessor: 'income',
+      },
+    ],
+    []
+  );
+
+
+  const tableData = useMemo(
+    () =>
+      expenses.map((expense, index) => ({
+        x: expense.x.toString().split("T")[0],
+        expense: expense?.y,
+        income: income[index]?.y,
+      })),
+    [expenses, income]
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable({ columns, data: tableData });
+
+  return (
+    <div>
+      <table {...getTableProps()} style={{ border: "1px solid black", borderCollapse: "collapse", width: "100%" }}
+      >
+        <thead>
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <th {...column.getHeaderProps()} style={{ border: '1px solid black', padding: '8px' }}>{column.render('Header')}</th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map(row => {
+            prepareRow(row);
+            return (
+              <tr {...row.getRowProps()} style={{ border: '1px solid black' }}>
+                {row.cells.map(cell => {
+                  return <td {...cell.getCellProps()} style={{ border: '1px solid black', padding: '8px' }}>{cell.render('Cell')}</td>;
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+
+
+
 
 export default LineChart;

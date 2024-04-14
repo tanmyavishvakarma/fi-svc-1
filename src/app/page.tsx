@@ -5,8 +5,6 @@ import { IncomeExpenses } from '../components/IncomeExpenses'
 import { TransactionList } from '../components/TransactionList'
 import { AddTransaction } from '../components/AddTransaction'
 import { GlobalProvider } from '../context/GlobalState'
-import LineChart from '../components/LineChart'
-import PieChart from '../components/PieChart'
 export default function Home() {
   return (
     <div>
@@ -16,6 +14,7 @@ export default function Home() {
           <Balance />
           <IncomeExpenses />
           <AddTransaction />
+          <TransactionList showLatestThree/>
         </div>
       </GlobalProvider>
 
