@@ -19,7 +19,7 @@ export default function Home() {
         <Header />
         <Balance />
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minWidth:"40vw" }}>
-          <h2>View Insights of your expenditures</h2>
+          <h2>Explore insights into your expenditures.</h2>
         </div>
         <PieChart />
         <br></br>
