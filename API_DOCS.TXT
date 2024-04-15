@@ -1,0 +1,112 @@
+API DOCUMENTATION
+
+Transaction API
+
+This API provides endpoints to manage transactions. It allows users to retrieve, create, and delete transactions from the database.
+
+Endpoints
+
+GET /api/transactions
+
+Retrieves a list of transactions from the database.
+
+Response
+- Status Code: 200 OK
+- Body:
+  [
+    {
+      "id": 1,
+      "date": "2024-04-15",
+      "description": "Transaction description",
+      "amount": 100.50,
+      "category": "Food",
+      "isExpense": true
+    },
+    {
+      "id": 2,
+      "date": "2024-04-14",
+      "description": "Another transaction",
+      "amount": 50.25,
+      "category": "Transport",
+      "isExpense": true
+    }
+  ]
+
+POST /api/transactions
+
+Creates a new transaction in the database.
+
+Request Body
+- date (string): Date of the transaction (YYYY-MM-DD)
+- text (string): Description of the transaction
+- amount (number): Amount of the transaction
+- category (string): Category of the transaction
+- isExpense (boolean): Indicates if the transaction is an expense
+
+Response
+- Status Code: 200 OK
+- Body:
+  {
+    "success": true,
+    "data": {
+      "id": 3,
+      "date": "2024-04-16",
+      "description": "New transaction",
+      "amount": 75.00,
+      "category": "Shopping",
+      "isExpense": true
+    }
+  }
+
+DELETE /api/transactions?id=<transaction_id>
+
+Deletes a transaction with the specified ID from the database.
+
+Response
+- Status Code: 200 OK
+- Body:
+  {
+    "success": true
+  }
+
+
+Insights API
+
+Endpoints
+
+GET /api/insights
+
+- Description: This endpoint retrieves financial transaction data from the database, processes it to categorize expenses and income, and returns insights in JSON format.
+- Method: GET
+- Returns:
+  - income: An array of objects representing income transactions, each object containing x (date) and y (amount) properties.
+  - expenses: An array of objects representing expense transactions, each object containing x (date) and y (amount) properties.
+  - names: An array of strings representing categories of expenses.
+  - quantities: An array of numbers representing the total amount of each expense category.
+
+Example
+
+Request
+
+GET /api/insights
+
+Response
+
+{
+  "income": [
+    {"x": "2024-04-01T00:00:00.000Z", "y": 1000},
+    {"x": "2024-04-05T00:00:00.000Z", "y": 1500}
+  ],
+  "expenses": [
+    {"x": "2024-04-02T00:00:00.000Z", "y": 200},
+    {"x": "2024-04-03T00:00:00.000Z", "y": 300},
+    {"x": "2024-04-04T00:00:00.000Z", "y": 250}
+  ],
+  "names": ["Groceries", "Utilities", "Entertainment"],
+  "quantities": [200, 300, 250]
+}
+
+Dependencies
+
+- Next.js: A React framework for building server-side rendered and statically generated web applications.
+- Drizzle ORM: An object-relational mapping library for Node.js, used for database interactions.

@@ -26,12 +26,24 @@ const PieChart: React.FC = () => {
     };
     return (
         <div>
-            {viewMode === "Chart" ? (
-                <ChartView names={names} quantities={quantities} palette={palette} />
-            ) : (
-                <TableView names={names} quantities={quantities} />
-            )}
-            <div style={{ display: "flex", justifyContent:"center" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
+                <h5>Chart View </h5>
+                <Switch onChange={toggleViewMode} checked={viewMode === "List"}
+                    onColor="#2693e6"
+                    offColor="#2693e6"
+                    handleDiameter={10}
+                    uncheckedIcon={false}
+                    checkedIcon={false}
+                    boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                    activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                    height={20}
+                    width={48}
+                    className="react-switch"
+                    id="material-switch"
+                />
+                <h5>Table View</h5>
+            </div >
+            {/* <div style={{ display: "flex", justifyContent:"center" }}>
                 <h5>Toggle {viewMode} View</h5>
                 <input
                     type="checkbox"
@@ -39,7 +51,15 @@ const PieChart: React.FC = () => {
                     checked={viewMode === "List"}
                 />
             </div>
-        </div>
+             */}
+            {
+                viewMode === "Chart" ? (
+                    <ChartView names={names} quantities={quantities} palette={palette} />
+                ) : (
+                    <TableView names={names} quantities={quantities} />
+                )
+            }
+        </div >
     );
 };
 

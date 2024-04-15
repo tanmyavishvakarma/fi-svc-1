@@ -18,24 +18,13 @@ export default function Home() {
       <GlobalProvider>
         <Header />
         <Balance />
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", margin: "20px" }}>
-          <h5>View Category wise Expenditure</h5>
-          <Switch onChange={handleChange} checked={checked}
-            onColor="#2693e6"
-            offColor="#2693e6"
-            handleDiameter={10}
-            uncheckedIcon={false}
-            checkedIcon={false}
-            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
-            activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
-            height={20}
-            width={48}
-            className="react-switch"
-            id="material-switch"
-          />
-          <h5>View Transaction Trends</h5>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minWidth:"40vw" }}>
+          <h2>View Insights of your expenditures</h2>
         </div>
-        {checked ? <LineChart /> : <PieChart />}
+        <PieChart />
+        <br></br>
+        <hr></hr>
+        <LineChart />
       </GlobalProvider>
     </div>
   );

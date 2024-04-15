@@ -14,7 +14,6 @@ export default function Home() {
           <TransactionList />
         </div>
       </GlobalProvider>
-
     </div>
   );
 }

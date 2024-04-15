@@ -1,36 +1,148 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Usage
 
-## Getting Started
+1. Clone the repository:
 
-First, run the development server:
+   ```bash
+   git clone https://github.com/tanmyavishvakarma/fi-svc-1
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the server:
+
+   ```bash
+   npm run dev
+   ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# API DOCUMENTATION
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# Transaction API
 
-## Learn More
+This API provides endpoints to manage transactions. It allows users to retrieve, create, and delete transactions from the database.
 
-To learn more about Next.js, take a look at the following resources:
+## Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### GET `/api/transactions`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Retrieves a list of transactions from the database.
 
-## Deploy on Vercel
+#### Response
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Status Code: 200 OK
+- Body:
+  ```json
+  [
+    {
+      "id": 1,
+      "date": "2024-04-15",
+      "description": "Transaction description",
+      "amount": 100.50,
+      "category": "Food",
+      "isExpense": true
+    },
+    {
+      "id": 2,
+      "date": "2024-04-14",
+      "description": "Another transaction",
+      "amount": 50.25,
+      "category": "Transport",
+      "isExpense": true
+    }
+  ]
+  ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### POST `/api/transactions`
+
+Creates a new transaction in the database.
+
+#### Request Body
+
+- `date` (string): Date of the transaction (YYYY-MM-DD)
+- `text` (string): Description of the transaction
+- `amount` (number): Amount of the transaction
+- `category` (string): Category of the transaction
+- `isExpense` (boolean): Indicates if the transaction is an expense
+
+#### Response
+
+- Status Code: 200 OK
+- Body:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 3,
+      "date": "2024-04-16",
+      "description": "New transaction",
+      "amount": 75.00,
+      "category": "Shopping",
+      "isExpense": true
+    }
+  }
+  ```
+
+### DELETE `/api/transactions?id=<transaction_id>`
+
+Deletes a transaction with the specified ID from the database.
+
+#### Response
+
+- Status Code: 200 OK
+- Body:
+  ```json
+  {
+    "success": true
+  }
+  ```
+
+
+## Insights API Documentation
+
+### Endpoints
+
+#### GET `/api/insights`
+
+- **Description:** This endpoint retrieves financial transaction data from the database, processes it to categorize expenses and income, and returns insights in JSON format.
+- **Method:** GET
+- **Returns:**
+  - **income:** An array of objects representing income transactions, each object containing `x` (date) and `y` (amount) properties.
+  - **expenses:** An array of objects representing expense transactions, each object containing `x` (date) and `y` (amount) properties.
+  - **names:** An array of strings representing categories of expenses.
+  - **quantities:** An array of numbers representing the total amount of each expense category.
+
+### Example
+
+#### Request
+
+```http
+GET /api/insights
+```
+
+#### Response
+
+```json
+{
+  "income": [
+    {"x": "2024-04-01T00:00:00.000Z", "y": 1000},
+    {"x": "2024-04-05T00:00:00.000Z", "y": 1500}
+  ],
+  "expenses": [
+    {"x": "2024-04-02T00:00:00.000Z", "y": 200},
+    {"x": "2024-04-03T00:00:00.000Z", "y": 300},
+    {"x": "2024-04-04T00:00:00.000Z", "y": 250}
+  ],
+  "names": ["Rent", "Utilities", "Entertainment"],
+  "quantities": [200, 300, 250]
+}
+```
+
+### Dependencies
+
+- **Next.js:** A React framework for building server-side rendered and statically generated web applications.
+- **Drizzle ORM:** An object-relational mapping library for Node.js, used for database interactions.

@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 export async function GET() {
   const data = db.select().from(transactions).all().toReversed();
 
-  data.sort((a, b) => new Date(a.date) - new Date(b.date));
+  data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const expenses = data
     .filter((item) => item.isExpense)

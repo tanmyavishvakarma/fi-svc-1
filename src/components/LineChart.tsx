@@ -4,6 +4,7 @@ import Chart from "react-apexcharts";
 import ApexCharts from "apexcharts";
 import { useTable } from "react-table";
 import { useMemo } from 'react';
+import Switch from "react-switch";
 
 const LineChart: React.FC = () => {
   const chartRef = useRef<any>(null);
@@ -124,8 +125,26 @@ const LineChart: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{minHeight:"60vh"}}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
+        <h5>Graph View</h5>
+        <Switch onChange={toggleViewMode} checked={viewMode === "List"}
+          onColor="#2693e6"
+          offColor="#2693e6"
+          handleDiameter={10}
+          uncheckedIcon={false}
+          checkedIcon={false}
+          boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+          activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+          height={20}
+          width={48}
+          className="react-switch"
+          id="material-switch"
+        />
+        <h5>Table View</h5>
+      </div>
       {viewMode === "Chart" ? (
+
         <div id="linechart">
           <Chart
             options={options}
@@ -138,14 +157,7 @@ const LineChart: React.FC = () => {
       ) : (
         <TableView expenses={expenses} income={income} />
       )}
-      <div style={{ display: "flex", justifyContent:"center" }}>
-        <h5>Toggle {viewMode} View</h5>
-        <input
-          type="checkbox"
-          onChange={toggleViewMode}
-          checked={viewMode === "List"}
-        />
-      </div>
+
     </div>
   );
 };
@@ -163,62 +175,73 @@ const TableView: React.FC<{ expenses: any[]; income: any[] }> = ({
         accessor: 'x',
       },
       {
-        Header: 'Expense',
-        accessor: 'expense',
-      },
-      {
-        Header: 'Income',
-        accessor: 'income',
+        Header: 'Value',
+        accessor: 'value',
       },
     ],
     []
   );
 
-
-  const tableData = useMemo(
+  const expenseData = useMemo(
     () =>
       expenses.map((expense, index) => ({
         x: expense.x.toString().split("T")[0],
-        expense: expense?.y,
-        income: income[index]?.y,
+        value: expense?.y,
       })),
-    [expenses, income]
+    [expenses]
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({ columns, data: tableData });
+  const incomeData = useMemo(
+    () =>
+      income.map((incomeItem, index) => ({
+        x: incomeItem.x.toString().split("T")[0],
+        value: incomeItem?.y,
+      })),
+    [income]
+  );
 
   return (
-    <div>
-      <table {...getTableProps()} style={{ border: "1px solid black", borderCollapse: "collapse", width: "100%" }}
-      >
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()} style={{ border: '1px solid black', padding: '8px' }}>{column.render('Header')}</th>
-              ))}
+    <div style={{ display: "flex", width: "100%", height: "100%" }}>
+      <div style={{ marginRight: "20px", width: "100%" }}>
+        <h4>Expenses</h4>
+        <table style={{ border: "1px solid black", borderCollapse: "collapse", width: "100%" }}
+        >
+          <thead>
+            <tr>
+              <th style={{ border: "1px solid black", padding: "8px" }}>Date</th>
+              <th style={{ border: "1px solid black", padding: "8px" }}>Expense</th>
             </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()} style={{ border: '1px solid black' }}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()} style={{ border: '1px solid black', padding: '8px' }}>{cell.render('Cell')}</td>;
-                })}
+          </thead>
+          <tbody>
+            {expenseData.map((row, index) => (
+              <tr style={{ border: "1px solid black", padding: "8px" }} key={index}>
+                <td style={{ border: "1px solid black", padding: "8px" }}>{row.x}</td>
+                <td style={{ border: "1px solid black", padding: "8px" }}>{row.value}</td>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ width: "100%" }}>
+        <h4>Income</h4>
+        <table style={{ border: "1px solid black", borderCollapse: "collapse", width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={{ border: "1px solid black", padding: "8px" }}>Date</th>
+              <th style={{ border: "1px solid black", padding: "8px" }}>Income</th>
+            </tr>
+          </thead>
+          <tbody>
+            {incomeData.map((row, index) => (
+              <tr key={index} style={{ border: "1px solid black", padding: "8px" }}>
+                <td style={{ border: "1px solid black", padding: "8px" }}>{row.x}</td>
+                <td style={{ border: "1px solid black", padding: "8px" }}
+                >{row.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
